@@ -1,0 +1,46 @@
+name: service_provider
+description: A new Flutter project.
+
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.14.0 <3.0.0"
+
+dependencies:
+  get:
+  get_storage:
+
+  dio:
+
+  google_fonts:
+
+  cached_network_image:
+  carousel_slider:
+  flutter_svg:
+  flutter_staggered_grid_view:
+  cupertino_icons:
+
+  webview_flutter:
+  flutter_html:
+  google_maps_flutter:
+
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints:
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/image/
+    - assets/icon/
+    - assets/setting/
+    - assets/locale/
