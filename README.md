@@ -28,7 +28,8 @@
 
 </p>
 
-<h5>
+# APPLICATION FUNCTIONALITY
+<h6>
     <br>
     APPLICATION FUNCTIONALITY <br>
     1) Change language <br>
@@ -37,5 +38,5 @@
     4) Flutter 2.5.1 support <br>
     5) Easy to services are search <br>
     6) Support languages are English, Spanish and Arabic. 
-</h5>
+</h6>
 
