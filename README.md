@@ -28,14 +28,14 @@
 
 </p>
 
-<h4>
+<h5>
     <br>
-    APPLICATION FUNCTIONALITY 
-    1) Change language
-    2) Change the theme
-    3) GetX service use
-    4) Flutter 2.5.1 support
-    5) Easy to services are search 
-    6) Support languages are English, Spanish and Arabic.
-</h4>
+    APPLICATION FUNCTIONALITY <br>
+    1) Change language <br>
+    2) Change the theme <br>
+    3) GetX service use <br>
+    4) Flutter 2.5.1 support <br>
+    5) Easy to services are search <br>
+    6) Support languages are English, Spanish and Arabic. 
+</h5>
 
