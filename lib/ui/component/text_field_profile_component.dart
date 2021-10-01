@@ -1,103 +1,70 @@
-/*
- * Copyright (c) 2020 .
- */
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../common/ui.dart';
-
 class TextFieldWidget extends StatelessWidget {
-  const TextFieldWidget({
-    Key key,
-    this.onSaved,
-    this.validator,
-    this.keyboardType,
-    this.initialValue,
-    this.hintText,
-    this.iconData,
-    this.labelText,
-    this.obscureText,
-    this.suffixIcon,
-    this.isFirst,
-    this.isLast,
-    this.style,
-    this.textAlign,
-  }) : super(key: key);
+  const TextFieldWidget(
+      {Key? key,
+      this.labelText,
+      this.isFirst,
+      this.isLast,
+      this.iconData,
+      this.suffixIcon})
+      : super(key: key);
 
-  final FormFieldSetter<String> onSaved;
-  final FormFieldValidator<String> validator;
-  final TextInputType keyboardType;
-  final String initialValue;
-  final String hintText;
-  final TextAlign textAlign;
-  final String labelText;
-  final TextStyle style;
-  final IconData iconData;
-  final bool obscureText;
-  final bool isFirst;
-  final bool isLast;
-  final Widget suffixIcon;
+  final String? labelText;
+  final bool? isFirst;
+  final bool? isLast;
+  final IconData? iconData;
+  final Widget? suffixIcon;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(top: 20, bottom: 14, left: 20, right: 20),
-      margin: EdgeInsets.only(
-          left: 20, right: 20, top: topMargin, bottom: bottomMargin),
-      decoration: BoxDecoration(
-          color: Get.theme.primaryColor,
-          borderRadius: buildBorderRadius,
-          boxShadow: [
-            BoxShadow(
-                color: Get.theme.focusColor.withOpacity(0.1),
-                blurRadius: 10,
-                offset: Offset(0, 5)),
-          ],
-          border: Border.all(color: Get.theme.focusColor.withOpacity(0.05))),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text(
-            labelText ?? "",
-            style: Get.textTheme.bodyText1,
-            textAlign: textAlign ?? TextAlign.start,
-          ),
+        padding:
+            const EdgeInsets.only(top: 20, bottom: 14, left: 20, right: 20),
+        margin: EdgeInsets.only(
+            left: 20, right: 20, top: topMargin, bottom: bottomMargin),
+        decoration: BoxDecoration(
+            color: Get.theme.primaryColor,
+            borderRadius: buildBorderRadius,
+            boxShadow: [
+              BoxShadow(
+                  color: Get.theme.focusColor.withOpacity(0.1),
+                  blurRadius: 10,
+                  offset: const Offset(0, 5))
+            ],
+            border: Border.all(color: Get.theme.focusColor.withOpacity(0.05))),
+        child:
+            Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+          Text(labelText ?? '',
+              style: Get.textTheme.bodyText1, textAlign: TextAlign.start),
           TextFormField(
-            keyboardType: keyboardType ?? TextInputType.text,
-            onSaved: onSaved,
-            validator: validator,
-            initialValue: initialValue ?? '',
-            style: style ?? Get.textTheme.bodyText2,
-            obscureText: obscureText ?? false,
-            textAlign: textAlign ?? TextAlign.start,
-            decoration: Ui.getInputDecoration(
-              hintText: hintText ?? '',
-              iconData: iconData,
-              suffixIcon: suffixIcon,
-            ),
-          ),
-        ],
-      ),
-    );
+              keyboardType: TextInputType.text,
+              style: Get.textTheme.bodyText2,
+              textAlign: TextAlign.start,
+              decoration: getInputDecoration(
+                iconData: iconData,
+                suffixIcon: suffixIcon,
+              )),
+        ]));
   }
 
   BorderRadius get buildBorderRadius {
-    if (isFirst != null && isFirst) {
-      return BorderRadius.vertical(top: Radius.circular(10));
+    if (isFirst != null && isFirst!) {
+      return const BorderRadius.vertical(top: Radius.circular(10));
     }
-    if (isLast != null && isLast) {
-      return BorderRadius.vertical(bottom: Radius.circular(10));
+    if (isLast != null && isLast!) {
+      return const BorderRadius.vertical(bottom: Radius.circular(10));
     }
-    if (isFirst != null && !isFirst && isLast != null && !isLast) {
-      return BorderRadius.all(Radius.circular(0));
+    if (isFirst != null && !isFirst! && isLast != null && !isLast!) {
+      return const BorderRadius.all(Radius.circular(0));
     }
-    return BorderRadius.all(Radius.circular(10));
+    return const BorderRadius.all(Radius.circular(10));
   }
 
   double get topMargin {
-    if ((isFirst != null && isFirst)) {
+    if ((isFirst != null && isFirst!)) {
       return 20;
     } else if (isFirst == null) {
       return 20;
@@ -107,12 +74,32 @@ class TextFieldWidget extends StatelessWidget {
   }
 
   double get bottomMargin {
-    if ((isLast != null && isLast)) {
+    if ((isLast != null && isLast!)) {
       return 10;
     } else if (isLast == null) {
       return 10;
     } else {
       return 0;
     }
+  }
+
+  static InputDecoration getInputDecoration(
+      {String hintText = '', IconData? iconData, Widget? suffixIcon}) {
+    return InputDecoration(
+      hintText: hintText,
+      hintStyle: Get.textTheme.caption,
+      prefixIcon: iconData != null
+          ? Icon(iconData, color: Get.theme.focusColor).marginOnly(right: 14)
+          : const SizedBox(),
+      prefixIconConstraints: iconData != null
+          ? const BoxConstraints.expand(width: 38, height: 38)
+          : const BoxConstraints.expand(width: 0, height: 0),
+      floatingLabelBehavior: FloatingLabelBehavior.never,
+      contentPadding: const EdgeInsets.all(0),
+      border: const OutlineInputBorder(borderSide: BorderSide.none),
+      focusedBorder: const OutlineInputBorder(borderSide: BorderSide.none),
+      enabledBorder: const OutlineInputBorder(borderSide: BorderSide.none),
+      suffixIcon: suffixIcon,
+    );
   }
 }

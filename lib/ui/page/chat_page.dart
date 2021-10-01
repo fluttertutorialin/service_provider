@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../widget/chats_widget.dart';
 
-class ChatsPage extends StatelessWidget {
-  const ChatsPage({Key? key}) : super(key: key);
+class ChatPage extends StatelessWidget {
+  const ChatPage({Key? key}) : super(key: key);
 
   _conversationsList() {
     return ListView.separated(

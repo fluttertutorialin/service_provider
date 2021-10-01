@@ -1,187 +1,151 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../controller/controller.dart';
+import '../../navigation/route_name.dart';
+import '../widget/account_link_widget.dart';
+import '../../util/extensions.dart';
 
-import '../../../../common/ui.dart';
-import '../../../global_widgets/notifications_button_widget.dart';
-import '../../../routes/app_pages.dart';
-import '../../../services/auth_service.dart';
-import '../../root/controllers/root_controller.dart';
-import '../controllers/account_controller.dart';
-import '../widgets/account_link_widget.dart';
+class AccountPage extends StatelessWidget {
+  const AccountPage({Key? key}) : super(key: key);
 
-class AccountView extends GetView<AccountController> {
   @override
   Widget build(BuildContext context) {
-    var _currentUser = Get.find<AuthService>().user;
     return Scaffold(
         appBar: AppBar(
-          title: Text(
-            "Account".tr,
-            style: Get.textTheme.headline6.merge(TextStyle(color: context.theme.primaryColor)),
-          ),
-          centerTitle: true,
-          backgroundColor: Get.theme.accentColor,
-          automaticallyImplyLeading: false,
-          leading: new IconButton(
-            icon: new Icon(Icons.sort, color: Get.theme.primaryColor),
-            onPressed: () => {Scaffold.of(context).openDrawer()},
-          ),
-          actions: [
-            NotificationsButtonWidget(
-              iconColor: Get.theme.primaryColor,
-              labelColor: Get.theme.hintColor,
-            )
-          ],
-          elevation: 0,
-        ),
-        body: ListView(
-          primary: true,
-          children: [
-            Stack(
-              alignment: AlignmentDirectional.bottomCenter,
-              children: [
-                Container(
-                  height: 170,
-                  width: Get.width,
-                  decoration: BoxDecoration(
+            title: Text('account'.tr,
+                style: Get.textTheme.headline6!.merge(TextStyle(
+                    color: context.theme.primaryColor, fontSize: 18))),
+            centerTitle: true,
+            backgroundColor: Get.theme.accentColor,
+            automaticallyImplyLeading: false,
+            leading: IconButton(
+                icon: Icon(Icons.sort, color: Get.theme.primaryColor),
+                onPressed: () => {Scaffold.of(context).openDrawer()}),
+            elevation: 0),
+        body: ListView(primary: true, children: [
+          Stack(alignment: AlignmentDirectional.bottomCenter, children: [
+            Container(
+                height: 170,
+                width: Get.width,
+                decoration: BoxDecoration(
                     color: Get.theme.accentColor,
-                    borderRadius: BorderRadius.vertical(bottom: Radius.circular(10)),
+                    borderRadius: const BorderRadius.vertical(
+                        bottom: Radius.circular(10)),
                     boxShadow: [
-                      BoxShadow(color: Get.theme.focusColor.withOpacity(0.2), blurRadius: 10, offset: Offset(0, 5)),
-                    ],
-                  ),
-                  margin: EdgeInsets.only(bottom: 50),
-                  child: Padding(
+                      BoxShadow(
+                          color: Get.theme.focusColor.withOpacity(0.2),
+                          blurRadius: 10,
+                          offset: const Offset(0, 5))
+                    ]),
+                margin: const EdgeInsets.only(bottom: 50),
+                child: Padding(
                     padding: const EdgeInsets.all(20),
-                    child: Column(
-                      children: [
-                        Text(
-                          _currentUser.value.name,
-                          style: Get.textTheme.headline6.merge(TextStyle(color: Get.theme.primaryColor)),
-                        ),
-                        Text("- Freelancer -".tr, style: Get.textTheme.caption.merge(TextStyle(color: Get.theme.primaryColor))),
-                        SizedBox(height: 10),
-                        Text(_currentUser.value.email, style: Get.textTheme.caption.merge(TextStyle(color: Get.theme.primaryColor))),
-                      ],
-                    ),
-                  ),
-                ),
-                Container(
-                  decoration: Ui.getBoxDecoration(
+                    child: Column(children: [
+                      Text('name'.tr,
+                          style: Get.textTheme.headline6!
+                              .merge(TextStyle(color: Get.theme.primaryColor))),
+                      Text('freelancer'.tr,
+                          style: Get.textTheme.caption!
+                              .merge(TextStyle(color: Get.theme.primaryColor))),
+                      const SizedBox(height: 10),
+                      Text('email'.tr,
+                          style: Get.textTheme.caption!
+                              .merge(TextStyle(color: Get.theme.primaryColor)))
+                    ]))),
+            Container(
+                decoration: getBoxDecoration(
                     radius: 14,
-                    border: Border.all(width: 5, color: Get.theme.primaryColor),
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                    border:
+                        Border.all(width: 5, color: Get.theme.primaryColor)),
+                child: ClipRRect(
+                    borderRadius: const BorderRadius.all(Radius.circular(10)),
                     child: CachedNetworkImage(
-                      height: 100,
-                      width: 100,
-                      fit: BoxFit.cover,
-                      imageUrl: _currentUser.value.mediaThumb,
-                      placeholder: (context, url) => Image.asset(
-                        'assets/img/loading.gif',
-                        fit: BoxFit.cover,
-                        width: double.infinity,
                         height: 100,
-                      ),
-                      errorWidget: (context, url, error) => Icon(Icons.error_outline),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-              margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-              decoration: Ui.getBoxDecoration(),
-              child: Column(
-                children: [
-                  AccountLinkWidget(
-                    icon: Icon(Icons.person_outline, color: Get.theme.accentColor),
-                    text: Text("Profile".tr),
+                        width: 100,
+                        fit: BoxFit.cover,
+                        imageUrl: 'http://lorempixel.com/400/400/business/4/',
+                        placeholder: (context, url) => Image.asset(
+                            'assets/icon/icon.png',
+                            fit: BoxFit.cover,
+                            width: double.infinity,
+                            height: 100),
+                        errorWidget: (context, url, error) =>
+                            const Icon(Icons.error_outline))))
+          ]),
+          Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+              margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+              decoration: getBoxDecoration(),
+              child: Column(children: [
+                AccountLinkWidget(
+                    icon: Icon(Icons.person_outline,
+                        color: Get.theme.accentColor),
+                    text: Text('profile'.tr),
                     onTap: (e) {
-                      Get.toNamed(Routes.PROFILE);
-                    },
-                  ),
-                  AccountLinkWidget(
-                    icon: Icon(Icons.assignment_outlined, color: Get.theme.accentColor),
-                    text: Text("Bookings".tr),
+                      Get.toNamed(RouteName.profileRoute);
+                    }),
+                AccountLinkWidget(
+                    icon: Icon(Icons.assignment_outlined,
+                        color: Get.theme.accentColor),
+                    text: Text('booking'.tr),
                     onTap: (e) {
-                      Get.find<RootController>().changePageInRoot(0);
-                    },
-                  ),
-                  AccountLinkWidget(
-                    icon: Icon(Icons.notifications_outlined, color: Get.theme.accentColor),
-                    text: Text("Notifications".tr),
+                      Get.find<MainTabController>().changeTabIndex(0);
+                    }),
+                AccountLinkWidget(
+                    icon: Icon(Icons.notifications_outlined,
+                        color: Get.theme.accentColor),
+                    text: Text('notification'.tr),
                     onTap: (e) {
-                      Get.toNamed(Routes.NOTIFICATIONS);
-                    },
-                  ),
-                  AccountLinkWidget(
-                    icon: Icon(Icons.chat_outlined, color: Get.theme.accentColor),
-                    text: Text("Messages".tr),
+                      Get.toNamed(RouteName.notificationRoute);
+                    }),
+                AccountLinkWidget(
+                    icon:
+                        Icon(Icons.chat_outlined, color: Get.theme.accentColor),
+                    text: Text('message'.tr),
                     onTap: (e) {
-                      Get.find<RootController>().changePageInRoot(2);
-                    },
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-              margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-              decoration: Ui.getBoxDecoration(),
-              child: Column(
-                children: [
-                  AccountLinkWidget(
-                    icon: Icon(Icons.settings_outlined, color: Get.theme.accentColor),
-                    text: Text("Settings".tr),
+                      Get.find<MainTabController>().changeTabIndex(2);
+                    })
+              ])),
+          Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+              margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+              decoration: getBoxDecoration(),
+              child: Column(children: [
+                AccountLinkWidget(
+                    icon: Icon(Icons.translate_outlined,
+                        color: Get.theme.accentColor),
+                    text: Text('language'.tr),
                     onTap: (e) {
-                      Get.toNamed(Routes.SETTINGS);
-                    },
-                  ),
-                  AccountLinkWidget(
-                    icon: Icon(Icons.translate_outlined, color: Get.theme.accentColor),
-                    text: Text("Languages".tr),
+                      Get.toNamed(RouteName.languageRoute);
+                    }),
+                AccountLinkWidget(
+                    icon: Icon(Icons.brightness_6_outlined,
+                        color: Get.theme.accentColor),
+                    text: Text('themeMode'.tr),
                     onTap: (e) {
-                      Get.toNamed(Routes.SETTINGS_LANGUAGE);
-                    },
-                  ),
-                  AccountLinkWidget(
-                    icon: Icon(Icons.brightness_6_outlined, color: Get.theme.accentColor),
-                    text: Text("Theme Mode".tr),
+                      Get.toNamed(RouteName.themeModeRoute);
+                    })
+              ])),
+          Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+              margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+              decoration: getBoxDecoration(),
+              child: Column(children: [
+                AccountLinkWidget(
+                    icon: Icon(Icons.support_outlined,
+                        color: Get.theme.accentColor),
+                    text: Text('helpAndFaQ'.tr),
                     onTap: (e) {
-                      Get.toNamed(Routes.SETTINGS_THEME_MODE);
-                    },
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-              margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-              decoration: Ui.getBoxDecoration(),
-              child: Column(
-                children: [
-                  AccountLinkWidget(
-                    icon: Icon(Icons.support_outlined, color: Get.theme.accentColor),
-                    text: Text("Help & FAQ".tr),
-                    onTap: (e) {
-                      Get.toNamed(Routes.HELP);
-                    },
-                  ),
-                  AccountLinkWidget(
+                      Get.toNamed(RouteName.helpFaqRoute);
+                    }),
+                AccountLinkWidget(
                     icon: Icon(Icons.logout, color: Get.theme.accentColor),
-                    text: Text("Logout".tr),
+                    text: Text('logout'.tr),
                     onTap: (e) {
-                      Get.offAllNamed(Routes.LOGIN);
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ));
+                      Get.offNamed(RouteName.loginRoute);
+                    })
+              ]))
+        ]));
   }
 }

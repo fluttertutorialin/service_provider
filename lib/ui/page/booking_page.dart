@@ -1,311 +1,247 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:intl/intl.dart' show DateFormat;
-import 'package:map_launcher/map_launcher.dart' as launcher;
+import '../widget/booking_row_widget.dart';
+import '../widget/booking_til_widget.dart';
+import '../widget/booking_title_bar_widget.dart';
+import '../../util/extensions.dart';
 
-import '../../../../common/ui.dart';
-import '../../../global_widgets/circular_loading_widget.dart';
-import '../../../models/address_model.dart';
-import '../../../models/booking_model.dart';
-import '../controllers/booking_controller.dart';
-import '../widgets/booking_row_widget.dart';
-import '../widgets/booking_til_widget.dart';
-import '../widgets/booking_title_bar_widget.dart';
+class BookingPage extends StatelessWidget {
+  const BookingPage({Key? key}) : super(key: key);
 
-class BookingView extends GetView<BookingController> {
   @override
   Widget build(BuildContext context) {
-    return Obx(() {
-      var _booking = controller.booking.value;
-      if (!_booking.hasData) {
-        return Scaffold(
-          body: CircularLoadingWidget(height: Get.height),
-        );
-      } else {
-        return Scaffold(
-          bottomNavigationBar: Container(
-            padding: EdgeInsets.symmetric(vertical: 10),
-            decoration: BoxDecoration(
+    return Scaffold(
+        bottomNavigationBar: Container(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          decoration: BoxDecoration(
               color: Get.theme.primaryColor,
-              borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+              borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(20), topRight: Radius.circular(20)),
               boxShadow: [
-                BoxShadow(color: Get.theme.focusColor.withOpacity(0.1), blurRadius: 10, offset: Offset(0, -5)),
-              ],
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: MaterialButton(
+                BoxShadow(
+                    color: Get.theme.focusColor.withOpacity(0.1),
+                    blurRadius: 10,
+                    offset: const Offset(0, -5))
+              ]),
+          child: Row(children: [
+            Expanded(
+                child: MaterialButton(
                     elevation: 0,
-                    onPressed: () {
-                      // TODO Accept booking
-                      //controller.saveProfileForm(_profileForm);
-                    },
-                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 12),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    onPressed: () {},
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 30, vertical: 12),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
                     color: Get.theme.accentColor,
-                    child: Text("Accept".tr, style: Get.textTheme.bodyText2.merge(TextStyle(color: Get.theme.primaryColor))),
-                  ),
-                ),
-                SizedBox(width: 10),
-                MaterialButton(
+                    child: Text('accept'.tr,
+                        style: Get.textTheme.bodyText2!
+                            .merge(TextStyle(color: Get.theme.primaryColor))))),
+            const SizedBox(width: 10),
+            MaterialButton(
+                elevation: 0,
+                onPressed: () {},
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
+                color: Get.theme.hintColor.withOpacity(0.1),
+                child: Text('decline'.tr, style: Get.textTheme.bodyText2))
+          ]).paddingSymmetric(vertical: 10, horizontal: 20),
+        ),
+        body: RefreshIndicator(
+            onRefresh: () async {},
+            child: CustomScrollView(primary: true, shrinkWrap: false, slivers: <
+                Widget>[
+              SliverAppBar(
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  expandedHeight: 370,
                   elevation: 0,
-                  onPressed: () {
-                    // TODO decline booking
-                    // controller.resetProfileForm(_profileForm);
-                  },
-                  padding: EdgeInsets.symmetric(horizontal: 30, vertical: 12),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                  color: Get.theme.hintColor.withOpacity(0.1),
-                  child: Text("Decline".tr, style: Get.textTheme.bodyText2),
-                ),
-              ],
-            ).paddingSymmetric(vertical: 10, horizontal: 20),
-          ),
-          body: RefreshIndicator(
-              onRefresh: () async {
-                controller.refreshBooking(showMessage: true);
-              },
-              child: CustomScrollView(
-                primary: true,
-                shrinkWrap: false,
-                slivers: <Widget>[
-                  SliverAppBar(
-                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                    expandedHeight: 370,
-                    elevation: 0,
-                    // pinned: true,
-                    floating: true,
-                    iconTheme: IconThemeData(color: Get.theme.primaryColor),
-                    centerTitle: true,
-                    automaticallyImplyLeading: false,
-                    leading: new IconButton(
-                      icon: new Icon(Icons.arrow_back_ios, color: Get.theme.hintColor),
-                      onPressed: () => {Get.back()},
-                    ),
-                    actions: [
-                      MaterialButton(
+                  // pinned: true,
+                  floating: true,
+                  iconTheme: IconThemeData(color: Get.theme.primaryColor),
+                  centerTitle: true,
+                  automaticallyImplyLeading: false,
+                  leading: IconButton(
+                      icon: Icon(Icons.arrow_back_ios,
+                          color: Get.theme.hintColor),
+                      onPressed: () => {Get.back()}),
+                  actions: [
+                    MaterialButton(
                         elevation: 0,
-                        onPressed: () => openMapsSheet(context, _booking.address, _booking.id),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                        onPressed: () {},
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)),
                         color: Get.theme.accentColor,
                         child: Wrap(
-                          crossAxisAlignment: WrapCrossAlignment.center,
-                          spacing: 5,
-                          children: [
-                            Icon(Icons.map_outlined, color: Get.theme.primaryColor),
-                            Text("On Maps".tr, style: Get.textTheme.bodyText2.merge(TextStyle(color: Get.theme.primaryColor))),
-                          ],
-                        ),
-                      ).paddingSymmetric(horizontal: 20, vertical: 8),
-                    ],
-                    bottom: buildBookingTitleBarWidget(_booking),
-                    flexibleSpace: FlexibleSpaceBar(
-                      collapseMode: CollapseMode.parallax,
-                      background: Obx(() {
-                        return GoogleMap(
-                          compassEnabled: false,
-                          scrollGesturesEnabled: false,
-                          tiltGesturesEnabled: false,
-                          myLocationEnabled: false,
-                          myLocationButtonEnabled: false,
-                          zoomControlsEnabled: false,
-                          zoomGesturesEnabled: false,
-                          mapToolbarEnabled: false,
-                          rotateGesturesEnabled: false,
-                          liteModeEnabled: true,
-                          mapType: MapType.normal,
-                          initialCameraPosition: CameraPosition(target: LatLng(0, 0)),
-                          markers: Set.from(controller.allMarkers),
-                          onMapCreated: (GoogleMapController _con) {
-                            controller.mapController = _con;
-                          },
-                        );
-                      }),
-                    ).marginOnly(bottom: 60),
-                  ),
-                  SliverToBoxAdapter(
-                    child: Column(
+                            crossAxisAlignment: WrapCrossAlignment.center,
+                            spacing: 5,
+                            children: [
+                              Icon(Icons.map_outlined,
+                                  color: Get.theme.primaryColor),
+                              Text('onMap'.tr,
+                                  style: Get.textTheme.bodyText2!.merge(
+                                      TextStyle(color: Get.theme.primaryColor)))
+                            ])).paddingSymmetric(horizontal: 20, vertical: 8),
+                  ],
+                  bottom: _buildBookingTitleBarWidget(),
+                  flexibleSpace: FlexibleSpaceBar(
+                    collapseMode: CollapseMode.parallax,
+                    background: Container(),
+                  ).marginOnly(bottom: 60)),
+              SliverToBoxAdapter(
+                  child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        buildContactCustomer(_booking),
-                        BookingTilWidget(
-                          title: Text("Booking Details".tr, style: Get.textTheme.subtitle2),
-                          content: Column(
-                            children: [
-                              BookingRowWidget(description: "Booking Ref".tr, value: "#" + _booking.id.substring(15), hasDivider: true),
-                              BookingRowWidget(
-                                  description: "Progress".tr,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      Container(
-                                        padding: const EdgeInsets.only(right: 12, left: 12, top: 6, bottom: 6),
+                    _buildContactCustomer(),
+                    BookingTilWidget(
+                        title: Text('bookingDetails'.tr,
+                            style: Get.textTheme.subtitle2),
+                        content: Column(children: [
+                          BookingRowWidget(
+                              description: 'bookingRef'.tr,
+                              value: 'c6783dd68',
+                              hasDivider: true),
+                          BookingRowWidget(
+                              description: 'progress'.tr,
+                              child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Container(
+                                        padding: const EdgeInsets.only(
+                                            right: 12,
+                                            left: 12,
+                                            top: 6,
+                                            bottom: 6),
                                         decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.all(Radius.circular(5)),
-                                          color: Get.theme.focusColor.withOpacity(0.1),
-                                        ),
-                                        child: Text(
-                                          _booking.progress,
-                                          style: TextStyle(color: Get.theme.hintColor),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  hasDivider: true),
-                              BookingRowWidget(
-                                  description: "Payment Method".tr,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      Container(
-                                        padding: const EdgeInsets.only(right: 12, left: 12, top: 6, bottom: 6),
+                                            borderRadius:
+                                                const BorderRadius.all(
+                                                    Radius.circular(5)),
+                                            color: Get.theme.focusColor
+                                                .withOpacity(0.1)),
+                                        child: Text('statusCompleted'.tr,
+                                            style: TextStyle(
+                                                color: Get.theme.hintColor)))
+                                  ]),
+                              hasDivider: true),
+                          BookingRowWidget(
+                              description: 'paymentMethod'.tr,
+                              child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Container(
+                                        padding: const EdgeInsets.only(
+                                            right: 12,
+                                            left: 12,
+                                            top: 6,
+                                            bottom: 6),
                                         decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.all(Radius.circular(5)),
-                                          color: Get.theme.focusColor.withOpacity(0.1),
-                                        ),
-                                        child: Text(
-                                          _booking.paymentMethod.name,
-                                          style: TextStyle(color: Get.theme.hintColor),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  hasDivider: true),
-                              BookingRowWidget(
-                                description: "Tax Amount".tr,
-                                child: Align(
+                                            borderRadius:
+                                                const BorderRadius.all(
+                                                    Radius.circular(5)),
+                                            color: Get.theme.focusColor
+                                                .withOpacity(0.1)),
+                                        child: Text('Paypal',
+                                            style: TextStyle(
+                                                color: Get.theme.hintColor)))
+                                  ]),
+                              hasDivider: true),
+                          BookingRowWidget(
+                              description: 'taxAmount'.tr,
+                              child: Align(
                                   alignment: Alignment.centerRight,
-                                  child: Ui.getPrice(_booking.tax, style: Get.textTheme.bodyText2),
-                                ),
-                              ),
-                              BookingRowWidget(
-                                description: "Total Amount".tr,
-                                child: Align(
+                                  child: getPrice(18.00,
+                                      style: Get.textTheme.bodyText2))),
+                          BookingRowWidget(
+                              description: 'totalAmount'.tr,
+                              child: Align(
                                   alignment: Alignment.centerRight,
-                                  child: Ui.getPrice(_booking.total, style: Get.textTheme.headline6),
-                                ),
-                                hasDivider: true,
-                              ),
-                              BookingRowWidget(description: "Description".tr, value: _booking.description),
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                ],
-              )),
-        );
-      }
-    });
+                                  child: getPrice(145.86,
+                                      style: Get.textTheme.headline6)),
+                              hasDivider: true),
+                          BookingRowWidget(
+                              description: 'description'.tr,
+                              value: 'Ipsum ad anim ullamco deserunt')
+                        ]))
+                  ]))
+            ])));
   }
 
-  BookingTitleBarWidget buildBookingTitleBarWidget(Booking _booking) {
+  _buildBookingTitleBarWidget() {
     return BookingTitleBarWidget(
-      title: Row(
-        children: [
+        title: Row(children: [
           Flexible(
-            fit: FlexFit.tight,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text(
-                  _booking.eService?.title ?? '',
-                  style: Get.textTheme.headline5,
-                ),
-                Row(
+              fit: FlexFit.tight,
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Icon(Icons.person_outline, color: Get.theme.focusColor),
-                    SizedBox(width: 8),
-                    Text(
-                      _booking.user.name,
-                      style: Get.textTheme.bodyText1,
-                      maxLines: 1,
-                      overflow: TextOverflow.fade,
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Icon(Icons.place_outlined, color: Get.theme.focusColor),
-                    SizedBox(width: 8),
-                    Expanded(
-                      child: Text(_booking.address.address, maxLines: 2, overflow: TextOverflow.ellipsis, style: Get.textTheme.bodyText1),
-                    ),
-                  ],
-                  // spacing: 8,
-                  // crossAxisAlignment: WrapCrossAlignment.center,
-                ),
-              ],
-            ),
-          ),
+                    Text('Orboid Service', style: Get.textTheme.headline5),
+                    Row(children: [
+                      Icon(Icons.person_outline, size: 20, color: Get.theme.focusColor),
+                      const SizedBox(width: 8),
+                      Text('Hess Barker',
+                          style: Get.textTheme.bodyText1,
+                          maxLines: 1,
+                          overflow: TextOverflow.fade)
+                    ]),
+                    Row(children: [
+                      Icon(Icons.place_outlined, size: 20, color: Get.theme.focusColor),
+                      const SizedBox(width: 8),
+                      Expanded(
+                          child: Text('626 Meadow Street, Eagletowm, Michigan, 3705',
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: Get.textTheme.bodyText1))
+                    ])
+                  ])),
+          const SizedBox(width: 8),
           Container(
-            width: 80,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(DateFormat('HH:mm').format(_booking.dateTime),
+              width: 80,
+              child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+                Text('13:31',
                     maxLines: 1,
-                    style: Get.textTheme.bodyText2.merge(
-                      TextStyle(color: Get.theme.accentColor, height: 1.4),
-                    ),
+                    style: Get.textTheme.bodyText2!
+                        .merge(TextStyle(color: Get.theme.accentColor, height: 1.4)),
                     softWrap: false,
                     textAlign: TextAlign.center,
                     overflow: TextOverflow.fade),
-                Text(DateFormat('dd').format(_booking.dateTime),
+                Text('05',
                     maxLines: 1,
-                    style: Get.textTheme.headline3.merge(
-                      TextStyle(color: Get.theme.accentColor, height: 1),
-                    ),
+                    style: Get.textTheme.headline3!
+                        .merge(TextStyle(color: Get.theme.accentColor, height: 1)),
                     softWrap: false,
                     textAlign: TextAlign.center,
                     overflow: TextOverflow.fade),
-                Text(DateFormat('MMM').format(_booking.dateTime),
+                Text('Nov',
                     maxLines: 1,
-                    style: Get.textTheme.bodyText2.merge(
-                      TextStyle(color: Get.theme.accentColor, height: 1),
-                    ),
+                    style: Get.textTheme.bodyText2!
+                        .merge(TextStyle(color: Get.theme.accentColor, height: 1)),
                     softWrap: false,
                     textAlign: TextAlign.center,
-                    overflow: TextOverflow.fade),
-              ],
-            ),
-            decoration: BoxDecoration(
-              color: Get.theme.accentColor.withOpacity(0.2),
-              borderRadius: BorderRadius.all(Radius.circular(10)),
-            ),
-            padding: EdgeInsets.symmetric(horizontal: 5, vertical: 6),
-          ),
-        ],
-      ),
-    );
+                    overflow: TextOverflow.fade)
+              ]),
+              decoration: BoxDecoration(
+                  color: Get.theme.accentColor.withOpacity(0.2),
+                  borderRadius: const BorderRadius.all(Radius.circular(10))),
+              padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 6))
+        ]));
   }
 
-  Container buildContactCustomer(Booking _booking) {
+  _buildContactCustomer() {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      decoration: Ui.getBoxDecoration(),
-      child: Row(
-        children: [
+        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        decoration: getBoxDecoration(),
+        child: Row(children: [
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text("Contact Customer".tr, style: Get.textTheme.subtitle2),
-                Text(_booking.user?.phone ?? '', style: Get.textTheme.caption),
-              ],
-            ),
-          ),
-          Wrap(
-            spacing: 5,
-            children: [
-              MaterialButton(
+              child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text('contactCustomer'.tr, style: Get.textTheme.subtitle2),
+                Text('+1 (980) 438-2388', style: Get.textTheme.caption)
+              ])),
+          Wrap(spacing: 5, children: [
+            MaterialButton(
                 elevation: 0,
                 onPressed: () {
                   //controller.saveProfileForm(_profileForm);
@@ -313,72 +249,25 @@ class BookingView extends GetView<BookingController> {
                 height: 44,
                 minWidth: 44,
                 padding: EdgeInsets.zero,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
                 color: Get.theme.accentColor.withOpacity(0.2),
-                child: Icon(
-                  Icons.phone_android_outlined,
-                  color: Get.theme.accentColor,
-                ),
-              ),
-              MaterialButton(
+                child: Icon(Icons.phone_android_outlined,
+                    color: Get.theme.accentColor)),
+            MaterialButton(
                 elevation: 0,
-                onPressed: () {
-                  //controller.saveProfileForm(_profileForm);
-                },
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                onPressed: () {},
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
                 color: Get.theme.accentColor.withOpacity(0.2),
                 padding: EdgeInsets.zero,
                 height: 44,
                 minWidth: 44,
-                child: Icon(
-                  Icons.chat_outlined,
-                  color: Get.theme.accentColor,
-                ),
-              ),
-            ],
-          )
-        ],
-      ),
-    );
-  }
-
-  openMapsSheet(context, Address address, String _title) async {
-    try {
-      final coords = launcher.Coords(address.getLatLng().latitude, address.getLatLng().longitude);
-      final title = _title ?? "";
-      final availableMaps = await launcher.MapLauncher.installedMaps;
-
-      showModalBottomSheet(
-        context: context,
-        builder: (BuildContext context) {
-          return SafeArea(
-            child: SingleChildScrollView(
-              child: Container(
-                child: Wrap(
-                  children: <Widget>[
-                    for (var map in availableMaps)
-                      ListTile(
-                        onTap: () => map.showDirections(
-                          directionsMode: launcher.DirectionsMode.driving,
-                          destinationTitle: title,
-                          destination: coords,
-                        ),
-                        title: Text(map.mapName, style: Get.textTheme.bodyText2),
-                        leading: SvgPicture.asset(
-                          map.icon,
-                          height: 30.0,
-                          width: 30.0,
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-            ),
-          );
-        },
-      );
-    } catch (e) {
-      print(e);
-    }
+                child: Icon(Icons.chat_outlined, color: Get.theme.accentColor))
+          ])
+        ]));
   }
 }
+
+
+

@@ -2,6 +2,20 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+/*
+  void onSliderValueChanged(double value) {
+    setState(() {
+      var amount = value.round();
+    });
+  }
+
+  AmountSlider(
+                onChanged: onSliderValueChanged,
+                min: sliderMin,
+                max: sliderMax,
+              ),
+*/
+
 const divisionsCount = 16;
 const divisionWidth = 2.0;
 const spaceBetweenDivisions = 40.0;
@@ -70,14 +84,11 @@ class _AmountSliderState extends State<AmountSlider> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        Stack(
-          children: [
-            Container(
-              height: divisionMaxHeight,
-              child: ListView.separated(
+    return Stack(alignment: Alignment.center, children: [
+      Stack(children: [
+        SizedBox(
+            height: divisionMaxHeight,
+            child: ListView.separated(
                 controller: scrollController,
                 scrollDirection: Axis.horizontal,
                 separatorBuilder: (_, __) =>
@@ -86,38 +97,28 @@ class _AmountSliderState extends State<AmountSlider> {
                 itemBuilder: (context, index) {
                   if (index == 0 || index == divisionsCount + 1) {
                     return SizedBox(
-                      width: xMiddleScreen - spaceBetweenDivisions - (divisionWidth / 2),
-                    );
+                        width: xMiddleScreen -
+                            spaceBetweenDivisions -
+                            (divisionWidth / 2));
                   }
                   return AnimatedContainer(
                     margin: EdgeInsets.symmetric(
-                      vertical: calculateDivisionPadding(
-                        scrollController.position.pixels,
-                        index,
-                      ),
-                    ),
+                        vertical: calculateDivisionPadding(
+                            scrollController.position.pixels, index)),
                     width: divisionWidth,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(2),
-                      color: Colors.grey,
-                    ),
+                        borderRadius: BorderRadius.circular(2),
+                        color: Colors.grey),
                     duration: const Duration(microseconds: 100),
                   );
-                },
-              ),
-            ),
-          ],
-        ),
-        Container(
+                }))
+      ]),
+      Container(
           height: divisionMaxHeight,
           width: divisionWidth,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(2),
-            color: Colors.white,
-          ),
-        )
-      ],
-    );
+              borderRadius: BorderRadius.circular(2), color: Colors.white))
+    ]);
   }
 
   double calculateDivisionPadding(double scrollPosition, int itemIndex) {
@@ -135,7 +136,7 @@ class _AmountSliderState extends State<AmountSlider> {
           (xMiddleScreen - itemStartPosition + scrollPosition).abs();
     }
 
-    final normalMargin = (divisionMaxHeight - 10) / 2;
+    const normalMargin = (divisionMaxHeight - 10) / 2;
 
     if (itemDistanceToCenter > distanceFromCenterToStartTransform) {
       return normalMargin;

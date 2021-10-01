@@ -5,25 +5,20 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 
-enum Method {
-  GET,
-  POST,
-  DELETE,
-  PUT,
-}
+enum Method { get, post, delete, put }
 
-const MethodValues = {
-  Method.GET: 'get',
-  Method.POST: 'post',
-  Method.DELETE: 'delete',
-  Method.PUT: 'put',
+const methodValues = {
+  Method.get: 'get',
+  Method.post: 'post',
+  Method.delete: 'delete',
+  Method.put: 'put',
 };
 
 typedef HttpSuccessCallback<T> = void Function(T data);
 typedef HttpFailureCallback = void Function(ErrorEntity data);
 typedef ProgressCallback = void Function(int count, int total);
 
-CancelToken cancelToken = new CancelToken();
+CancelToken cancelToken = CancelToken();
 
 _parseAndDecode(String response) {
   return jsonDecode(response);
@@ -36,7 +31,7 @@ parseJson(String text) {
 class DioHelper {
   Future request<T>(
     String baseUrl, {
-    Method method = Method.GET,
+    Method method = Method.get,
     String? path = '',
     String contentType = Headers.jsonContentType,
     dynamic data,
@@ -45,8 +40,6 @@ class DioHelper {
     required HttpSuccessCallback<T> success,
     required HttpFailureCallback error,
   }) async {
-    print(baseUrl);
-
     try {
       BaseOptions baseOptions = BaseOptions(
           baseUrl: baseUrl,
@@ -60,7 +53,7 @@ class DioHelper {
       var dio = Dio(baseOptions)..interceptors.addAll(logInterceptor());
 
       Options requestOptions = options ?? Options();
-      requestOptions.headers = requestOptions.headers ?? Map();
+      requestOptions.headers = requestOptions.headers ?? {};
 
       // GLOBAL OR COMMON AUTHORIZATION HEADER
       /*Map<String, dynamic>? authorization = getAuthorizationHeader();
@@ -81,11 +74,11 @@ class DioHelper {
       var response = await dio.request(path!, data: data,
           onSendProgress: (received, total) {
         if (total != -1) {
-          print((received / total * 100).toStringAsFixed(0) + '%');
+          Get.log((received / total * 100).toStringAsFixed(0) + '%');
         }
       },
           queryParameters: queryParameters,
-          options: Options(method: MethodValues[method]),
+          options: Options(method: methodValues[method]),
           cancelToken: cancelToken);
 
       success(response.data);
@@ -94,7 +87,7 @@ class DioHelper {
     }
   }
 
-   logInterceptor() {
+  logInterceptor() {
     return [LogInterceptor(requestBody: true, responseBody: true)];
   }
 
@@ -106,16 +99,8 @@ class DioHelper {
     return headers;
   }*/
 
-  Future<void> fileDownloadFromUrl(String fileUrl, String savePath) async {
-    try {
-      final response = await Dio().download(fileUrl, savePath);
-      print(response.statusCode);
-    } catch (ex) {
-    } finally {}
-  }
-
   void cancelRequests(CancelToken token) {
-    token.cancel("cancelled");
+    token.cancel('cancelled');
   }
 
   ErrorEntity _createErrorEntity(DioError error) {
